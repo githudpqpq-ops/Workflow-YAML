@@ -1,0 +1,19 @@
+name: Basic Workflow
+on:
+  workflow_dispatch:
+jobs:
+  greeting-job:
+    name: Greeting and System Info
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print greeting
+        run: echo "Hello, GitHub Actions!"
+      - name: Print runner information
+        run: |
+          echo "Workflow успешно запущен."
+          echo "Операционная система:"
+          uname -a
+          echo "Текущая директория:"
+          pwd
+          echo "Пользователь runner:"
+          whoami
