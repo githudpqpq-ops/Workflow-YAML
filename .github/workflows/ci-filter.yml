@@ -1,0 +1,23 @@
+name: CI Filter
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "src/**"
+      - "package.json"
+jobs:
+  node-check:
+    name: Install Node.js and check versions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Show Node.js and npm versions
+        run: |
+          node -v
+          npm -v
