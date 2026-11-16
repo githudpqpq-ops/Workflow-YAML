@@ -1,0 +1,69 @@
+name: Advanced Pipeline
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Окружение для запуска"
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        default: staging
+      build_number:
+        description: "Номер сборки"
+        required: true
+        type: string
+        default: "1"
+      debug_mode:
+        description: "Включить режим отладки"
+        required: true
+        type: boolean
+        default: false
+jobs:
+  linux-build:
+    name: Linux Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full Git history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Display workflow inputs
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          DEBUG_MODE: ${{ inputs.debug_mode }}
+        run: |
+          echo "Environment: $TARGET_ENVIRONMENT"
+          echo "Build number: $BUILD_NUMBER"
+          echo "Debug mode: $DEBUG_MODE"
+      - name: Count Git commits
+        run: |
+          echo "Loaded commits:"
+          git rev-list --count HEAD
+      - name: Linux build summary
+        run: |
+          echo "Linux job completed successfully."
+          echo "Runner: $(uname -s)"
+  windows-build:
+    name: Windows Build
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Display workflow inputs
+        shell: pwsh
+        env:
+          TARGET_ENVIRONMENT: ${{ inputs.environment }}
+          BUILD_NUMBER: ${{ inputs.build_number }}
+          DEBUG_MODE: ${{ inputs.debug_mode }}
+        run: |
+          Write-Output "Environment: $env:TARGET_ENVIRONMENT"
+          Write-Output "Build number: $env:BUILD_NUMBER"
+          Write-Output "Debug mode: $env:DEBUG_MODE"
+      - name: Windows build summary
+        shell: pwsh
+        run: |
+          Write-Output "Windows build completed successfully."
+          Write-Output "Runner: $([System.Environment]::OSVersion.VersionString)"
